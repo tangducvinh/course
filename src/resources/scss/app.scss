@@ -1,6 +1,7 @@
 @import 'variables';
 
-
-h1 {
-    color: $red-color;
+.container {
+    width: 350px;
+    background-color: #ccc;
+    padding-top: 50px;
 }
