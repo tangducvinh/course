@@ -1,10 +1,15 @@
 const Course = require('../models/Course')
 
 class SiteController {
-    home(req, res) {
-        Course.find({})
-            .then(courses => res.json(courses))
-            .catch(err => res.status(400).json({error: "ERROR!!!"}))
+    home(req, res, next) {
+        Course.find({}) 
+            .then(courses => {
+                courses = courses.map(course => course.toObject())
+                res.render('home', {
+                    courses
+                })
+            })
+            .catch(next)
     }
     
     search(req, res) {
