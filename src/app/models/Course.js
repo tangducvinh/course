@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const Course = new Schema({
   name: {type: String},
   description: {type: String},
-  image: {type: String}
+  image: {type: String},
+  slug: {type: String}
 });
 
 module.exports = mongoose.model('Course', Course);
