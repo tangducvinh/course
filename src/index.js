@@ -15,6 +15,7 @@ app.use(morgan('combined'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Midle wave
 app.use(
     express.urlencoded({
         extended: true,
