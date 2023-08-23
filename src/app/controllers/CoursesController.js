@@ -20,10 +20,21 @@ class Courses {
         const formData = req.body
         formData.image = 'https://th.bing.com/th/id/OIP.QoTEZySktID2bx2HZOAFSAHaEK?pid=ImgDet&rs=1'
         const course = new Course(formData)
-        console.log(formData)
         course.save()
             .then(() => res.redirect('/'))
             .catch(error => {})
+    }
+
+    edit(req, res, next) {
+        Course.findOne({_id: req.params.id})
+            .then(courses => res.render('courses/edit', {courses: courses.toObject()}))
+            .catch(next)
+    }
+
+    update(req, res, next) {
+        Course.updateOne({_id: req.params.id}, req.body)
+            .then(() => res.redirect('/me/courses'))
+            .catch(next)
     }
 }
 

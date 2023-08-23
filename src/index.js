@@ -1,7 +1,8 @@
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
-const exphbs = require('express-handlebars');
+const exphbs = require('express-handlebars')
+const methodOverride = require('method-override')
 const app = express();
 const port = 3000;
 
@@ -15,6 +16,9 @@ app.use(morgan('combined'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// support convert from Post to Put
+app.use(methodOverride('_method'));
+
 // Midle wave
 app.use(
     express.urlencoded({
@@ -27,6 +31,9 @@ app.engine(
     'hbs',
     exphbs({
         extname: '.hbs',
+        helpers: {
+            sum: (a, b) => a + b,
+        }
     }),
 );
 app.set('view engine', 'hbs');
