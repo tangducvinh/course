@@ -11,7 +11,6 @@ function route(app) {
     app.use('/me', meRouter)
 
     app.use('/', siteRouter);
-
 }
 
 module.exports = route;

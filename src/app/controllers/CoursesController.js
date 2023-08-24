@@ -17,9 +17,7 @@ class Courses {
     }
 
     store(req, res) {
-        const formData = req.body
-        formData.image = 'https://th.bing.com/th/id/OIP.QoTEZySktID2bx2HZOAFSAHaEK?pid=ImgDet&rs=1'
-        const course = new Course(formData)
+        const course = new Course(req.body)
         course.save()
             .then(() => res.redirect('/'))
             .catch(error => {})
@@ -33,6 +31,12 @@ class Courses {
 
     update(req, res, next) {
         Course.updateOne({_id: req.params.id}, req.body)
+            .then(() => res.redirect('/me/courses'))
+            .catch(next)
+    }
+
+    delete(req, res, next) {
+        Course.deleteOne({_id: req.params.id})
             .then(() => res.redirect('/me/courses'))
             .catch(next)
     }

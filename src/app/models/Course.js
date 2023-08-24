@@ -14,6 +14,8 @@ const Course = new Schema({
   image: {type: String},
   slug: {type: String, slug: "name"},
   idv: {type: String},
+  level: {type: String},
+  instructor: {type: String},
 }, {
   timestamps: true,
 });
