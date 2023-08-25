@@ -1,7 +1,7 @@
 <table class="table mt-4">
     <div>
-        <h1>My course</h1>
-        <a href="/me/trash">Trash</a>
+        <a href="/me/courses">List course</a>
+        <h1>Trash</h1>
     </div>
   <thead>
         <tr>
@@ -20,14 +20,14 @@
                 <td>{{this.level}}</td>
                 <td>{{this.instructor}}</td>
                 <td>
-                    <a href="/courses/{{this._id}}/edit" class="btn btn-link">Fix</a>
-                    <a class="btn btn-link" href="" data-bs-toggle="modal" data-id={{this._id}} data-bs-target="#modal">Delete</a>
+                    <a href="" class="btn btn-link btn-restore" data-id="{{this._id}}" >Restore</a>
+                    <a class="btn btn-link" href="" data-bs-toggle="modal" data-id={{this._id}} data-bs-target="#modal">Permanently deleted</a>
                 </td>
             </tr>
         {{else}}
             <tr>
                 <td colspan="5" class="text-center">
-                    You have not post anything course. <a href="/courses/create">Post course</a>
+                    Haven't deleted anything course. <a href="/me/courses">List courses</a>
                 </td>
             </tr>
         {{/each}}
@@ -53,14 +53,16 @@
     </div>
 </div>
 
-<form name="form-delete" method="POST">
-
-</form>
+<form name="form-delete" method="POST"></form>
+<form name="form-restore" method="POST"></form>
 
 <script>
     var courseId;
     var deleteCourseBtn = document.querySelector('.btn-danger')
     var deleteForm = document.forms['form-delete']
+    var restoreForm = document.forms['form-restore']
+    var testForm = document.forms['form-test']
+    var restoreBtn = document.querySelectorAll('.btn-restore')
 
     modal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget
@@ -68,8 +70,17 @@
     })
 
     deleteCourseBtn.onclick = function() {
-        deleteForm.action = `/courses/${courseId}?_method=DELETE`
+        deleteForm.action = `/courses/${courseId}/force?_method=DELETE`
         deleteForm.submit()
     }
-    
+
+    restoreBtn.forEach( function(btn) {
+        btn.onclick = function(e) {
+            e.preventDefault()
+            var idRestore = btn.getAttribute('data-id')
+
+            restoreForm.action = `/courses/${idRestore}?_method=PATCH`
+            restoreForm.submit()
+        }
+    })
 </script>

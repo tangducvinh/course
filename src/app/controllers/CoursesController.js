@@ -36,7 +36,20 @@ class Courses {
     }
 
     delete(req, res, next) {
+        Course.delete({_id: req.params.id})
+            .then(() => res.redirect('/me/courses'))
+            .catch(next)
+    }
+
+    // delete vv
+    destroy(req, res, next) {
         Course.deleteOne({_id: req.params.id})
+            .then(() => res.redirect('/me/trash'))
+            .catch(next)
+    }
+
+    restore(req, res, next) {
+        Course.restore({_id: req.params.id})
             .then(() => res.redirect('/me/courses'))
             .catch(next)
     }

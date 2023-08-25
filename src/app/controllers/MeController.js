@@ -13,6 +13,18 @@ class Me {
             })
             .catch(next)
     }
+
+    trash(req, res, next) {
+        Courses.findWithDeleted({deleted: true})
+            .then(courses => {
+                courses = courses.map(course => course.toObject())
+                
+                res.render('me/trashCourse', {
+                    courses
+                })
+            })
+            .catch(next)
+    }
 }
 
 module.exports = new Me
