@@ -3,15 +3,15 @@ const Courses = require('../models/Course')
 
 class Me {
     show(req, res, next) {
-        Courses.find({})
-            .then(courses => {
+        Promise.all([Courses.find({}), Courses.countDocumentsWithDeleted({deleted: true})])
+            .then(([courses, deleteCount]) => {
                 courses = courses.map(course => course.toObject())
-                
                 res.render('me/courses', {
+                    deleteCount,
                     courses
                 })
-            })
-            .catch(next)
+            }
+        )
     }
 
     trash(req, res, next) {
