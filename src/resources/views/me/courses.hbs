@@ -1,39 +1,64 @@
-<table class="table mt-4">
+   
+<form name="form-container" class="mt-4" method="POST" action="/courses/handle-form-action">
     <div>
         <h1>My course</h1>
         <a href="/me/trash">Trash ({{deleteCount}})</a>
-    </div>
-  <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name course</th>
-            <th scope="col">Level</th>
-            <th scope="col">Instructor</th>
-            <th scope="col"></th>
-        </tr>
-  </thead>
-  <tbody>
-        {{#each courses}}
-            <tr>
-                <th scope="row">{{sum @index 1}}</th>
-                <td>{{this.name}}</td>
-                <td>{{this.level}}</td>
-                <td>{{this.instructor}}</td>
-                <td>
-                    <a href="/courses/{{this._id}}/edit" class="btn btn-link">Fix</a>
-                    <a class="btn btn-link" href="" data-bs-toggle="modal" data-id={{this._id}} data-bs-target="#modal">Delete</a>
-                </td>
-            </tr>
-        {{else}}
-            <tr>
-                <td colspan="5" class="text-center">
-                    You have not post anything course. <a href="/courses/create">Post course</a>
-                </td>
-            </tr>
-        {{/each}}
-  </tbody>
-</table>
 
+        <div class="mt-4 d-flex align-items-center">
+            <div class="form-check">
+                <input class="checkbox-all" type="checkbox" id="checkbox-all">
+                <label for="checkbox-all">
+                    Select all
+                </label>
+            </div>
+
+            <select class="select-action" name="action" required>
+                <option value="">-- Action --</option>
+                <option value="delete">Delete</option>
+            </select>
+
+            <button class="btn btn-primary btn-sm btn-effect disabled">Effect</button>
+        </div>
+    </div>
+
+    <table class="table mt-4">
+    <thead>
+            <tr>
+                <th></th>
+                <th scope="col">#</th>
+                <th scope="col">Name course</th>
+                <th scope="col">Level</th>
+                <th scope="col">Instructor</th>
+                <th scope="col"></th>
+            </tr>
+    </thead>
+        <tbody>
+            {{#each courses}}
+                <tr>
+                    <td>
+                        <div class="form-check">
+                            <input class="checkbox-item" name="courseIds" type="checkbox" value="{{this._id}}">
+                        </div>
+                    </td>
+                    <th scope="row">{{sum @index 1}}</th>
+                    <td>{{this.name}}</td>
+                    <td>{{this.level}}</td>
+                    <td>{{this.instructor}}</td>
+                    <td>
+                        <a href="/courses/{{this._id}}/edit" class="btn btn-link">Fix</a>
+                        <a class="btn btn-link" href="" data-bs-toggle="modal" data-id={{this._id}} data-bs-target="#modal">Delete</a>
+                    </td>
+                </tr>
+            {{else}}
+                <tr>
+                    <td colspan="5" class="text-center">
+                        You have not post anything course. <a href="/courses/create">Post course</a>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</form>
 <!-- Button trigger modal -->
 <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -61,6 +86,10 @@
     var courseId;
     var deleteCourseBtn = document.querySelector('.btn-danger')
     var deleteForm = document.forms['form-delete']
+    var checkboxAll = document.querySelector('.checkbox-all')
+    var checkItems = document.querySelectorAll('.checkbox-item')
+    var effectBtn = document.querySelector('.btn-effect')
+    var containerForm = document.forms['form-container']
 
     modal.addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget
@@ -71,5 +100,29 @@
         deleteForm.action = `/courses/${courseId}?_method=DELETE`
         deleteForm.submit()
     }
-    
+
+    checkboxAll.onchange = function() {
+        var isCheckedAll = $(this).prop('checked')
+
+        checkItems.forEach(function(item) {
+            $(item).prop('checked', isCheckedAll)
+        }) 
+
+        TestCheck()
+    }    
+
+    checkItems.forEach(function(item) {
+        item.onchange = function() {
+            var isCheckedAll = checkItems.length === $('input[name="courseIds"]:checked').length
+            $(checkboxAll).prop('checked', isCheckedAll)
+
+            TestCheck()
+        }
+    })
+
+    function TestCheck() {
+        var checked = $('input[name="courseIds"]:checked').length
+        if(checked) effectBtn.classList.remove('disabled')
+        else effectBtn.classList.add('disabled')
+    }
 </script>
