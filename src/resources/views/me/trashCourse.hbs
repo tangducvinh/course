@@ -1,38 +1,56 @@
-<table class="table mt-4">
+<form class="mt-4" method="POST" action="/courses/handle-form-action/trash">
     <div>
         <a href="/me/courses">List course</a>
         <h1>Trash</h1>
+        <div class="mt-4 px-4">
+            <input type="checkbox" id="checkbox-all">
+            <label for="checkbox-all">Select All</label>
+            <select name="action" required>
+                <option value="">-- Choose action --</option>
+                <option value="restore">Restore</option>
+                <option value="delete">Delete</option>
+            </select>
+
+            <button class="btn btn-primary btn-sm btn-effect disabled">Effect</button>
+        </div>
     </div>
-  <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name course</th>
-            <th scope="col">Level</th>
-            <th scope="col">Instructor</th>
-            <th scope="col"></th>
-        </tr>
-  </thead>
-  <tbody>
-        {{#each courses}}
-            <tr>
-                <th scope="row">{{sum @index 1}}</th>
-                <td>{{this.name}}</td>
-                <td>{{this.level}}</td>
-                <td>{{this.instructor}}</td>
-                <td>
-                    <a href="" class="btn btn-link btn-restore" data-id="{{this._id}}" >Restore</a>
-                    <a class="btn btn-link" href="" data-bs-toggle="modal" data-id={{this._id}} data-bs-target="#modal">Permanently deleted</a>
-                </td>
-            </tr>
-        {{else}}
-            <tr>
-                <td colspan="5" class="text-center">
-                    Haven't deleted anything course. <a href="/me/courses">List courses</a>
-                </td>
-            </tr>
-        {{/each}}
-  </tbody>
-</table>
+
+    <table class="table mt-4">
+        <thead>
+                <tr>
+                    <th></th>
+                    <th scope="col">#</th>
+                    <th scope="col">Name course</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">Instructor</th>
+                    <th scope="col"></th>
+                </tr>
+        </thead>
+        <tbody>
+            {{#each courses}}
+                <tr>
+                    <td>
+                        <input class="checkbox-item" name="courseIds" type="checkbox" value="{{this._id}}">
+                    </td>
+                    <th scope="row">{{sum @index 1}}</th>
+                    <td>{{this.name}}</td>
+                    <td>{{this.level}}</td>
+                    <td>{{this.instructor}}</td>
+                    <td>
+                        <a href="" class="btn btn-link btn-restore" data-id="{{this._id}}" >Restore</a>
+                        <a class="btn btn-link" href="" data-bs-toggle="modal" data-id={{this._id}} data-bs-target="#modal">Permanently deleted</a>
+                    </td>
+                </tr>
+            {{else}}
+                <tr>
+                    <td colspan="5" class="text-center">
+                        Haven't deleted anything course. <a href="/me/courses">List courses</a>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</form>
 
 <!-- Button trigger modal -->
 <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -57,30 +75,55 @@
 <form name="form-restore" method="POST"></form>
 
 <script>
-    var courseId;
-    var deleteCourseBtn = document.querySelector('.btn-danger')
-    var deleteForm = document.forms['form-delete']
-    var restoreForm = document.forms['form-restore']
-    var testForm = document.forms['form-test']
-    var restoreBtn = document.querySelectorAll('.btn-restore')
+    document.addEventListener('DOMContentLoaded', function() {
+        var courseId;
+        var deleteCourseBtn = document.querySelector('.btn-danger')
+        var deleteForm = document.forms['form-delete']
+        var restoreForm = document.forms['form-restore']
+        var restoreBtn = document.querySelectorAll('.btn-restore')
+        var chooseAll = document.querySelector('#checkbox-all')
+        var itemCheckbox = $('input[name="courseIds"]')
+        var effectBtn = document.querySelector('.btn-effect')
 
-    modal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget
-        courseId = button.getAttribute('data-id')
-    })
+        modal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget
+            courseId = button.getAttribute('data-id')
+        })
 
-    deleteCourseBtn.onclick = function() {
-        deleteForm.action = `/courses/${courseId}/force?_method=DELETE`
-        deleteForm.submit()
-    }
+        deleteCourseBtn.onclick = function() {
+            deleteForm.action = `/courses/${courseId}/force?_method=DELETE`
+            deleteForm.submit()
+        }
 
-    restoreBtn.forEach( function(btn) {
-        btn.onclick = function(e) {
-            e.preventDefault()
-            var idRestore = btn.getAttribute('data-id')
+        restoreBtn.forEach( function(btn) {
+            btn.onclick = function(e) {
+                e.preventDefault()
+                var idRestore = btn.getAttribute('data-id')
 
-            restoreForm.action = `/courses/${idRestore}?_method=PATCH`
-            restoreForm.submit()
+                restoreForm.action = `/courses/${idRestore}?_method=PATCH`
+                restoreForm.submit()
+            }
+        })
+
+        chooseAll.onchange = function() {
+            var isChooseAll = $(this).prop('checked')
+            itemCheckbox.prop('checked', isChooseAll)
+            
+            TestCheck()
+        }
+
+        itemCheckbox.change(function () {
+            var isChooseAll = itemCheckbox.length === $('input[name="courseIds"]:checked').length
+            $(chooseAll).prop('checked', isChooseAll)
+
+            TestCheck()
+        })
+
+        function TestCheck() {
+            var isCheck = $('input[name="courseIds"]:checked').length 
+            
+            if(isCheck) effectBtn.classList.remove('disabled')
+            else effectBtn.classList.add('disabled')
         }
     })
 </script>

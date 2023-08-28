@@ -66,6 +66,23 @@ class Courses {
                 res.json({message: 'Action is invalid'})
         }
     }
+
+    handleFormActionTrash(req, res, next) {
+       switch(req.body.action) {
+        case 'restore':
+            Course.restore({_id: {$in: req.body.courseIds}})
+                .then(() => res.redirect('/me/courses'))
+                .catch(next)
+            break
+        case 'delete':
+            Course.deleteOne({_id: {$in: req.body.courseIds}})
+                .then(() => res.redirect('/me/trash'))
+                .catch(next)
+            break
+        default:
+            res.json({message: 'action is invalid'})
+       }
+    }
 }
 
 module.exports = new Courses

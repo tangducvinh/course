@@ -122,6 +122,7 @@
 
     function TestCheck() {
         var checked = $('input[name="courseIds"]:checked').length
+
         if(checked) effectBtn.classList.remove('disabled')
         else effectBtn.classList.add('disabled')
     }
