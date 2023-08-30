@@ -1,9 +1,9 @@
 <div class="mt-4 container">
     <div class="row">
         {{#each courses}}
-        <div class="col-sm-6 col-lg-4 mt-16">
+        <div class="col-sm-6 col-lg-4">
             <div class="card">
-                <a href="/courses/{{this.slug}}">
+                <a class="image" href="/courses/{{this.slug}}">
                     <img src={{this.image}} class="card-img-top" alt="{{this.name}}">
                 </a>
 

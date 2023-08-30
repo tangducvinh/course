@@ -6,6 +6,8 @@ const methodOverride = require('method-override')
 const app = express();
 const port = 3000;
 
+const SortMiddlewaves = require('./app/middlewaves/SortMiddlewaves')
+
 const route = require('./routes');
 const db = require('./config/db');
 
@@ -19,7 +21,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // support convert from Post to Put
 app.use(methodOverride('_method'));
 
-// Midle wave
+//Midle wave
+app.use(SortMiddlewaves)
 app.use(
     express.urlencoded({
         extended: true,
@@ -33,6 +36,28 @@ app.engine(
         extname: '.hbs',
         helpers: {
             sum: (a, b) => a + b,
+            sortable: (field, sort) => {
+                const currentType = field === sort.column ? sort.type : 'default'
+
+                const icons = {
+                    default: 'ti-arrows-vertical',
+                    asc: 'ti-arrow-up',
+                    desc: 'ti-arrow-down',
+                }
+
+                const types = {
+                    default: 'desc',
+                    desc: 'asc',
+                    asc: 'desc',
+                }
+
+                const type = types[currentType]
+                const icon = icons[currentType]
+                
+                return `<a href="?_sort&column=${field}&type=${type}">
+                    <i class=${icon}></i>
+                </a>`
+            }
         }
     }),
 );

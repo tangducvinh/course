@@ -26,9 +26,18 @@
             <tr>
                 <th></th>
                 <th scope="col">#</th>
-                <th scope="col">Name course</th>
-                <th scope="col">Level</th>
-                <th scope="col">Instructor</th>
+                <th scope="col">
+                    Name course
+                    {{{sortable 'name' _sort}}}
+                </th>
+                <th scope="col">
+                    Level
+                    {{{sortable 'level' _sort}}}
+                </th>
+                <th scope="col">
+                    Instructor
+                    {{{sortable 'instructor' _sort}}}
+                </th>
                 <th scope="col"></th>
             </tr>
     </thead>
